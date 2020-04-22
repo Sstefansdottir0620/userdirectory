@@ -6,6 +6,8 @@ import "./App.css";
 
 function App() {
   const [employees, setEmployees] = useState([]);
+  const [filteredEmployees, setFilteredEmployees] = useState([]);
+  const [employeeSearch, setEmployeeSearch] = useState("");
 
   useEffect(() => {
     API.getUsers()
@@ -17,23 +19,34 @@ function App() {
         console.log(employees);
       })
       .catch((err) => console.log(err));
-  }, [employees]);
+  }, []);
 
-  // handleSearch() {
-  //   var filteredEmployees = this.state.employees.filter((employee) => {
-  //     return this.state.employeeSearch === employee.name.first;
-  //   });
-  //   this.setState({
-  //     employees: filteredEmployees,
-  //   });
-  // }
+  function handleSearch(event) {
+    setEmployeeSearch(event.target.value);
+    var filtering = employees.filter((employee) => {
+      return employee.name.first.includes(employeeSearch);
+    });
+    setFilteredEmployees(filtering);
+    console.log(filteredEmployees);
+  }
 
   return (
     <>
       <Header />
       <div className="container-fluid">
-        {employees.map((employee) => (
-          <EmployeeSet data={employee} />
+        <div className="row justify-content-center">
+          <input
+            className="input-group mt-3 p-2"
+            type="input"
+            placeholder="Employee Search"
+            onChange={handleSearch}
+          />
+        </div>
+        {filteredEmployees.map((employee) => (
+          <EmployeeSet
+            key={employee.name.first + employee.name.last}
+            data={employee}
+          />
         ))}
       </div>
     </>
